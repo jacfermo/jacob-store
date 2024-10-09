@@ -286,29 +286,33 @@
 
 
     <!-- Additional Scripts -->
+    <h1>Data from Google Spreadsheet</h1>
+    <table id="data-table" border="1"></table>
     <script>
       const spreadsheetId = '158Dbv5oY9v7nkUsEQiPZvilb9zsMynwEABlV97IEG-Q'; // Replace with your actual spreadsheet ID
-      const url = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:json`;
+      const apiKey = 'AIzaSyDBdWni8p1EQXJ5chFXA3CqQby_zOOgMyk'; // Replace with your API key
+      const range = 'Sheet1!A1:C10'; // Adjust the range as needed
+      const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}?key=${apiKey}`;
 
       fetch(url)
-          .then(response => response.text())
+          .then(response => response.json())
           .then(data => {
-              const jsonData = JSON.parse(data.substr(47).slice(0, -2));
               const table = document.getElementById('data-table');
-              const rows = jsonData.table.rows;
+              const rows = data.values;
 
               // Create table header
-              const header = jsonData.table.cols.map(col => `<th>${col.label}</th>`).join('');
+              const header = rows[0].map(cell => `<th>${cell}</th>`).join('');
               table.innerHTML += `<tr>${header}</tr>`;
 
               // Create table rows
-              rows.forEach(row => {
-                  const cells = row.c.map(cell => `<td>${cell ? cell.v : ''}</td>`).join('');
+              rows.slice(1).forEach(row => {
+                  const cells = row.map(cell => `<td>${cell}</td>`).join('');
                   table.innerHTML += `<tr>${cells}</tr>`;
               });
           })
           .catch(error => console.error('Error fetching the data:', error));
   </script>
+</body>
     <script src="assets/js/custom.js"></script>
     <script src="assets/js/owl.js"></script>
     <script src="assets/js/slick.js"></script>
