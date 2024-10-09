@@ -291,7 +291,7 @@
     <script>
       const spreadsheetId = '158Dbv5oY9v7nkUsEQiPZvilb9zsMynwEABlV97IEG-Q'; // Replace with your actual spreadsheet ID
       const apiKey = 'AIzaSyDBdWni8p1EQXJ5chFXA3CqQby_zOOgMyk'; // Replace with your API key
-      const range = 'Sheet1!A1:C10'; // Adjust the range as needed
+      const range = 'Sheet1!A:M'; // Adjust the range to fetch columns A to M
       const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}?key=${apiKey}`;
 
       fetch(url)
@@ -300,13 +300,19 @@
               const table = document.getElementById('data-table');
               const rows = data.values;
 
+              // Check if there is data
+              if (!rows || rows.length === 0) {
+                  table.innerHTML = '<tr><td colspan="13">No data found.</td></tr>';
+                  return;
+              }
+
               // Create table header
               const header = rows[0].map(cell => `<th>${cell}</th>`).join('');
               table.innerHTML += `<tr>${header}</tr>`;
 
               // Create table rows
               rows.slice(1).forEach(row => {
-                  const cells = row.map(cell => `<td>${cell}</td>`).join('');
+                  const cells = row.map(cell => `<td>${cell || ''}</td>`).join('');
                   table.innerHTML += `<tr>${cells}</tr>`;
               });
           })
