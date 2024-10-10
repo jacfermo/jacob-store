@@ -265,16 +265,16 @@
 
     
     <footer>
-      <div class="container">
-        <div class="row">
+      <div class="container1">
+        <div class="container1-r">
           <div class="col-md-12">
-            <div class="inner-content">
-              <p>Copyright &copy; 2020 Sixteen Clothing Co., Ltd.
-            
-            - Design: <a rel="nofollow noopener" href="https://templatemo.com" target="_blank">TemplateMo</a></p>
-            </div>
+              <div class="section-heading">
+                  <h2>Latest Products</h2>
+                  <a href="products.html">view all products <i class="fa fa-angle-right"></i></a>
+              </div>
           </div>
-        </div>
+          <div id="product-list" class="product-list"></div> <!-- Container for product items -->
+      </div>
       </div>
       
     </footer>
@@ -291,8 +291,10 @@
     <script>
       const spreadsheetId = '158Dbv5oY9v7nkUsEQiPZvilb9zsMynwEABlV97IEG-Q'; // Replace with your actual spreadsheet ID
       const apiKey = 'AIzaSyDBdWni8p1EQXJ5chFXA3CqQby_zOOgMyk'; // Replace with your API key
-      const range = 'Sheet1!A:M'; // Adjust the range to fetch columns A to M
+      const range = 'Products!A2:M'; // Adjust the range to fetch columns A to M
       const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}?key=${apiKey}`;
+      var productList = document.getElementById('product-list');
+             
 
       fetch(url)
           .then(response => response.json())
@@ -302,19 +304,32 @@
 
               // Check if there is data
               if (!rows || rows.length === 0) {
-                  table.innerHTML = '<tr><td colspan="13">No data found.</td></tr>';
-                  return;
+                productList.innerHTML = '<p>No products found.</p>';
+                    return;
+
               }
 
-              // Create table header
-              const header = rows[0].map(cell => `<th>${cell}</th>`).join('');
-              table.innerHTML += `<tr>${header}</tr>`;
-
               // Create table rows
-              rows.slice(1).forEach(row => {
-                  const cells = row.map(cell => `<td>${cell || ''}</td>`).join('');
-                  table.innerHTML += `<tr>${cells}</tr>`;
-              });
+                // Loop through rows and create product items
+                rows.forEach(row => {
+                    const [Product_ID,Product_Name,SKU,Category, Price, Stock_Quantity, Description, Image_URL,Weight,Dimensions,Shipping_Class,Tags,Status ] = row; // Removed rating and reviewsCount
+
+                    // Create product item
+                    const product_Item = `
+                        <div class="w-100"> 
+                            <div class="product-item">
+                                <a href="#"><img src="${Image_URL}" alt=""></a>
+                                <div class="down-content">
+                                    <a href="#"><h4>${Product_Name}</h4></a>
+                                    <h3>${parseFloat(Price).toFixed(2)}</h3>
+                                    <p>${Description}</p>
+                                </div>
+                            </div>
+                        </div>`;
+                    
+                    // Append product item to the product list
+                    productList.innerHTML += product_Item;
+                });
           })
           .catch(error => console.error('Error fetching the data:', error));
   </script>

@@ -45,7 +45,11 @@ ul.social-icons li a {
 	text-align: center;
 	transition: all .3s;
 }
-
+div#product-list {
+    display: grid;
+    grid-template-columns: repeat(4, 0.5fr);
+	gap: 10px;
+}
 ul.social-icons li a:hover {
 	background-color: #0d9953;
 	color: #fff;
@@ -412,6 +416,8 @@ header .navbar {
 .product-item {
 	border: 1px solid #eee;
 	margin-bottom: 30px;
+	height: 100% !important;
+
 }
 
 .product-item .down-content {
